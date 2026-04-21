@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.nevrmd.tunes.domain.model.MediaItem
 
 @Composable
@@ -34,7 +36,10 @@ fun MediaCard(
     ) {
         Column {
             AsyncImage(
-                model = item.imageUrl,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.imageUrl)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = item.title,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -11,6 +11,7 @@ interface ITunesApi {
         @Query("term") term: String,
         @Query("country") country: String = "US",
         @Query("media") media: String = "all",
+        @Query("entity") entity: String,
         @Query("limit") limit: Int = 50,
         @Query("lang") language: String = "en_us",
         @Query("explicit") explicit: String = "Yes"
