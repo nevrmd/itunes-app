@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetMediaItemUseCase @Inject constructor(
     private val repository: MediaRepository
 ) {
-    operator fun invoke(id: Long): MediaItem? {
+    suspend operator fun invoke(id: Long): MediaItem? {
         return repository.getMediaItemById(id)
     }
 }

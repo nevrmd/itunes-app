@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -38,7 +39,7 @@ class SearchViewModel @Inject constructor(
                 } else {
                     _state.update { it.copy(isLoading = true, error = null) }
                     delay(500L)
-                    emit(searchMediaUseCase(query, filter))
+                    emitAll(searchMediaUseCase(query, filter))
                 }
             }
             .onEach { result ->

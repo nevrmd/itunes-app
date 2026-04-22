@@ -1,35 +1,48 @@
 package com.nevrmd.tunes.data.repository
 
+import com.nevrmd.tunes.data.local.SearchDao
 import com.nevrmd.tunes.data.mapper.toMediaItem
+import com.nevrmd.tunes.data.mapper.toEntity
 import com.nevrmd.tunes.data.remote.ITunesApi
 import com.nevrmd.tunes.domain.model.MediaItem
 import com.nevrmd.tunes.domain.model.MediaType
 import com.nevrmd.tunes.domain.repository.MediaRepository
-import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(
-    private val api: ITunesApi
+    private val api: ITunesApi,
+    private val dao: SearchDao
 ) : MediaRepository {
-    private var cachedResults = listOf<MediaItem>()
 
     override suspend fun searchMedia(
         query: String,
         type: MediaType
-    ): Result<List<MediaItem>> {
-        return try {
+    ): Flow<Result<List<MediaItem>>> = flow {
+        val localResults = dao.getResultsForQuerySync(query).map { it.toMediaItem() }
+        emit(Result.success(localResults))
+
+        try {
             val response = api.searchMedia(
                 term = query,
                 media = type.media,
                 entity = type.entity
             )
-            val domainItems = response.results.map { it.toMediaItem() }
-            cachedResults = domainItems
+            val entities = response.results.map { it.toEntity(query) }
 
-            Result.success(domainItems)
+            dao.insertResults(entities)
+            dao.trimCache()
+
+            emit(Result.success(entities.map { it.toMediaItem() }))
         } catch (e: Exception) {
-            Result.failure(e)
+            if (localResults.isEmpty()) {
+                emit(Result.failure(e))
+            }
         }
     }
 
-    override fun getMediaItemById(id: Long): MediaItem? = cachedResults.find { it.id == id }
+    override suspend fun getMediaItemById(id: Long): MediaItem? {
+        return dao.getMediaItemById(id)?.toMediaItem()
+    }
 }

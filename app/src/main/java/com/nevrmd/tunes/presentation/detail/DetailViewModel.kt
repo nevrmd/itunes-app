@@ -53,7 +53,7 @@ class DetailViewModel @OptIn(UnstableApi::class)
         }, MoreExecutors.directExecutor())
     }
 
-    fun loadItem(id: Long) {
+    suspend fun loadItem(id: Long) {
         val item = getMediaItemUseCase(id)
         _state.update { it.copy(mediaItem = item) }
 
