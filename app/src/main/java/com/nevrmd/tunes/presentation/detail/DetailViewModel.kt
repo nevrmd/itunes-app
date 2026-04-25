@@ -53,15 +53,17 @@ class DetailViewModel @OptIn(UnstableApi::class)
         }, MoreExecutors.directExecutor())
     }
 
-    suspend fun loadItem(id: Long) {
-        val item = getMediaItemUseCase(id)
-        _state.update { it.copy(mediaItem = item) }
+    fun loadItem(id: Long) {
+        viewModelScope.launch {
+            val item = getMediaItemUseCase(id)
+            _state.update { it.copy(mediaItem = item) }
 
-        item?.let {
-            if (controller == null) {
-                pendingUrl = it.previewUrl
-            } else {
-                prepareAudio(it.previewUrl)
+            item?.let {
+                if (controller == null) {
+                    pendingUrl = it.previewUrl
+                } else {
+                    prepareAudio(it.previewUrl)
+                }
             }
         }
     }
@@ -70,6 +72,7 @@ class DetailViewModel @OptIn(UnstableApi::class)
         controller?.let { player ->
             player.stop()
             player.clearMediaItems()
+            _state.update { it.copy(isPlaying = false) }
             player.setMediaItem(androidx.media3.common.MediaItem.fromUri(url))
             player.prepare()
             _state.update { it.copy(isLoadingAudio = true) }

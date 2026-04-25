@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.1"
+agp = "9.2.0"
 coreKtx = "1.18.0"
 hiltAndroid = "2.59.2"
 hiltAndroidCompiler = "2.59.2"
@@ -10,8 +10,8 @@ espressoCore = "3.7.0"
 kotlinxSerializationJson = "1.11.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
-kotlin = "2.3.20"
-composeBom = "2026.03.01"
+kotlin = "2.3.21"
+composeBom = "2026.04.01"
 media3Exoplayer = "1.10.0"
 media3Ui = "1.10.0"
 retrofit = "3.0.0"
@@ -51,7 +51,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.7" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.8" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
