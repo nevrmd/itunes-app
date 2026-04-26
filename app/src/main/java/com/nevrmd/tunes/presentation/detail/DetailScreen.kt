@@ -112,7 +112,6 @@ fun DetailScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Media Controls (Playback logic)
                 MediaControls(
                     viewModel = viewModel,
                     isLoading = state.isLoadingAudio,
@@ -130,12 +129,11 @@ fun DetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // THE GRID: FlowRow handles the null checks automatically
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    maxItemsInEachRow = 2 // Keeps it looking like a grid
+                    maxItemsInEachRow = 2
                 ) {
                     val itemModifier = Modifier.weight(1f).minimumInteractiveComponentSize()
 

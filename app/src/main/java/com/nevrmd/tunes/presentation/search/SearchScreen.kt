@@ -32,9 +32,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,8 +50,6 @@ fun SearchScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var searchQuery by rememberSaveable { mutableStateOf(state.query) }
-
     Scaffold(
         topBar = {
             Column(
@@ -64,9 +59,8 @@ fun SearchScreen(
                     .background(MaterialTheme.colorScheme.surface)
             ) {
                 TextField(
-                    value = searchQuery,
+                    value = state.query,
                     onValueChange = {
-                        searchQuery = it
                         viewModel.onEvent(SearchEvent.OnQueryChange(it))
                     },
                     modifier = Modifier

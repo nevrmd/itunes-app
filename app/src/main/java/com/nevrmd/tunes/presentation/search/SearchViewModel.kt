@@ -37,8 +37,8 @@ class SearchViewModel @Inject constructor(
                 if (query.isBlank()) {
                     emit(Result.success(emptyList()))
                 } else {
-                    _state.update { it.copy(isLoading = true, error = null) }
                     delay(500L)
+                    _state.update { it.copy(isLoading = true, error = null) }
                     emitAll(searchMediaUseCase(query, filter))
                 }
             }
