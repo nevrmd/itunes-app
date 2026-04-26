@@ -1,22 +1,25 @@
 package com.nevrmd.tunes.data.repository
 
 import com.nevrmd.tunes.data.local.SearchDao
-import com.nevrmd.tunes.data.mapper.toMediaItem
 import com.nevrmd.tunes.data.mapper.toEntity
+import com.nevrmd.tunes.data.mapper.toMediaItem
 import com.nevrmd.tunes.data.remote.ITunesApi
 import com.nevrmd.tunes.domain.model.MediaItem
 import com.nevrmd.tunes.domain.model.MediaType
 import com.nevrmd.tunes.domain.repository.MediaRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(
     private val api: ITunesApi,
-    private val dao: SearchDao
+    private val dao: SearchDao,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MediaRepository {
 
-    override suspend fun searchMedia(
+    override fun searchMedia(
         query: String,
         type: MediaType
     ): Flow<Result<List<MediaItem>>> = flow {
@@ -40,7 +43,7 @@ class MediaRepositoryImpl @Inject constructor(
                 emit(Result.failure(e))
             }
         }
-    }
+    }.flowOn(ioDispatcher)
 
     override suspend fun getMediaItemById(id: Long): MediaItem? {
         return dao.getMediaItemById(id)?.toMediaItem()

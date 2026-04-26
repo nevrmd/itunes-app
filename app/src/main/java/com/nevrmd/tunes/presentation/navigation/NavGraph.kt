@@ -1,4 +1,4 @@
-package com.nevrmd.tunes.presentation.main
+package com.nevrmd.tunes.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -10,11 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.nevrmd.tunes.presentation.detail.DetailScreen
-import com.nevrmd.tunes.presentation.navigation.Screen
 import com.nevrmd.tunes.presentation.search.SearchScreen
 
 @Composable
-fun TunesRoot() {
+fun NavGraph() {
     val navController = rememberNavController()
 
     Surface(

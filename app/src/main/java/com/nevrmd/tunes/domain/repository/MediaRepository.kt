@@ -5,6 +5,6 @@ import com.nevrmd.tunes.domain.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
 interface MediaRepository {
-    suspend fun searchMedia(query: String, type: MediaType): Flow<Result<List<MediaItem>>>
+    fun searchMedia(query: String, type: MediaType): Flow<Result<List<MediaItem>>>
     suspend fun getMediaItemById(id: Long): MediaItem?
 }

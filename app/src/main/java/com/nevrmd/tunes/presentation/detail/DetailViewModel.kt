@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @HiltViewModel
 class DetailViewModel @OptIn(UnstableApi::class)
@@ -45,6 +48,9 @@ class DetailViewModel @OptIn(UnstableApi::class)
         browserFuture = MediaController.Builder(context, sessionToken).buildAsync()
 
         browserFuture?.addListener({
+            // check if already canceled
+            if (browserFuture?.isCancelled == true) return@addListener
+
             setupControllerListener()
             pendingUrl?.let {
                 prepareAudio(it)
@@ -69,11 +75,24 @@ class DetailViewModel @OptIn(UnstableApi::class)
     }
 
     private fun prepareAudio(url: String) {
+        val item = _state.value.mediaItem ?: return
+
         controller?.let { player ->
             player.stop()
             player.clearMediaItems()
             _state.update { it.copy(isPlaying = false) }
-            player.setMediaItem(androidx.media3.common.MediaItem.fromUri(url))
+
+            val mediaItem = MediaItem.Builder()
+                .setUri(url)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(item.title)
+                        .setArtist(item.artist)
+                        .setArtworkUri(item.imageUrl.toUri())
+                        .build()
+                ).build()
+
+            player.setMediaItem(mediaItem)
             player.prepare()
             _state.update { it.copy(isLoadingAudio = true) }
         }
@@ -116,7 +135,7 @@ class DetailViewModel @OptIn(UnstableApi::class)
                         _state.update { it.copy(progress = currentProgress) }
                     }
                 }
-                delay(500)
+                delay(200)
             }
         }
     }
@@ -143,6 +162,8 @@ class DetailViewModel @OptIn(UnstableApi::class)
     override fun onCleared() {
         super.onCleared()
         stopProgressTicker()
+        pendingUrl = null
+        browserFuture?.cancel(true)
         browserFuture?.let { MediaController.releaseFuture(it) }
     }
 }

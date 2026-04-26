@@ -51,10 +51,13 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Serialization, Retrofit, Retrofit converter
+    // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Retrofit, Retrofit converter, OkHttp
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.logging.interceptor)
 
     // Coil
     implementation(libs.coil.compose)
